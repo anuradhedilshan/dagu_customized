@@ -676,6 +676,34 @@ type UI struct {
 	NavbarTitle           string
 	MaxDashboardPageLimit int
 	DAGs                  DAGsConfig
+	Branding              BrandingConfig
+}
+
+// BrandingConfig holds UI branding, logo, and theme color overrides.
+type BrandingConfig struct {
+	ConfigFile  string
+	Title       string
+	LogoURL     string
+	LogoFile    string
+	FaviconURL  string
+	FaviconFile string
+	Colors      BrandingColors
+	DarkColors  BrandingColors
+}
+
+// BrandingColors holds customizable CSS color values (e.g., hex, rgb, hsl).
+type BrandingColors struct {
+	Primary           string
+	PrimaryHover      string
+	Background        string
+	Foreground        string
+	Card              string
+	CardForeground    string
+	Sidebar           string
+	SidebarForeground string
+	SidebarPrimary    string
+	Accent            string
+	Border            string
 }
 
 // DAGsConfig holds DAG list page configuration.

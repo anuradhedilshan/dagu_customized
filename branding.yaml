@@ -1,0 +1,42 @@
+# Sample UI Branding & Theme Configuration
+# Usage:
+#   DAGU_UI_BRANDING_FILE=./branding.yaml dagu server
+# Or copy this file as `branding.yaml` alongside your `config.yaml`.
+
+title: "Control Plane"
+
+# Use a local image/SVG file (served at /assets/brand-logo) or an external logo_url
+logo_file: ""
+logo_url: "https://infomateworld.com/wp-content/uploads/2024/01/Infomate-Logo2-300x169.png.webp"
+
+# Optional custom favicon
+favicon_file: ""
+favicon_url: ""
+
+# Light mode colors
+colors:
+  primary: "#0ea5e9"
+  primary_hover: "#0284c7"
+  background: "#f8fafc"
+  foreground: "#0f172a"
+  card: "#ffffff"
+  card_foreground: "#0f172a"
+  sidebar: "#0f172a"
+  sidebar_foreground: "#e2e8f0"
+  sidebar_primary: "#38bdf8"
+  accent: "#f1f5f9"
+  border: "#e2e8f0"
+
+# Dark mode colors
+dark_colors:
+  primary: "#38bdf8"
+  primary_hover: "#7dd3fc"
+  background: "#020617"
+  foreground: "#f8fafc"
+  card: "#0f172a"
+  card_foreground: "#f8fafc"
+  sidebar: "#020617"
+  sidebar_foreground: "#94a3b8"
+  sidebar_primary: "#38bdf8"
+  accent: "#1e293b"
+  border: "#1e293b"

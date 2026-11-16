@@ -168,7 +168,7 @@ function SystemStatus() {
           </h1>
           <p className="text-sm text-muted-foreground">
             <I18nText
-              text={'Monitor and manage Dagu services and system health'}
+              text={'Monitor and manage services and system health'}
             />
           </p>
         </div>
@@ -331,7 +331,7 @@ function SystemStatus() {
           {autoRefresh && <I18nText text={' • Refreshing every 5 seconds'} />}
         </div>
         <div>
-          <I18nText text={'Dagu v'} />
+          <span>v</span>
           {config.version}
         </div>
       </div>

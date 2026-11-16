@@ -5,16 +5,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="{{ basePath }}/assets/favicon.ico" />
-    <title>{{ navbarTitle }}</title>
+    <link rel="icon" href="{{ brandingFaviconURL }}" />
+    <title>{{ brandingTitle }}</title>
     <script>
       function getConfig() {
         {{- $update := updateStatus }}
         return {
           apiURL: "{{ apiURL }}",
           basePath: "{{ basePath }}",
-          title: "{{ navbarTitle }}",
+          title: "{{ js brandingTitle }}",
           navbarColor: "{{ navbarColor }}",
+          branding: {
+            title: "{{ js brandingTitle }}",
+            logoUrl: "{{ js brandingLogoURL }}",
+          },
           version: "{{ version }}",
           tz: "{{ tz }}",
           tzOffsetInSec: +"{{ tzOffsetInSec }}",
@@ -90,9 +94,12 @@
         var root = document.documentElement;
         root.classList.toggle('dark', dark);
         root.style.colorScheme = dark ? 'dark' : 'light';
-        root.style.backgroundColor = dark ? '#0b0d12' : '#f4f2ed';
+        root.style.backgroundColor = dark ? '{{ brandingDarkBg }}' : '{{ brandingLightBg }}';
       })();
     </script>
+    {{- if brandingCSS }}
+    <style id="brand-theme">{{ brandingCSS }}</style>
+    {{- end }}
     <script
       defer="defer"
       src="{{ basePath }}/assets/bundle.js?v={{ assetVersion }}"

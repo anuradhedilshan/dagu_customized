@@ -1507,22 +1507,111 @@ func (l *ConfigLoader) loadUIConfig(cfg *Config, def Definition) {
 	cfg.UI.DAGs.SortField = l.v.GetString("ui.dags.sort_field")
 	cfg.UI.DAGs.SortOrder = l.v.GetString("ui.dags.sort_order")
 
-	if def.UI == nil {
+	brandingFile := l.v.GetString("ui.branding_file")
+
+	if def.UI != nil {
+		cfg.UI.NavbarColor = def.UI.NavbarColor
+		setIfNotEmpty(&cfg.UI.NavbarTitle, def.UI.NavbarTitle)
+		setIfNotEmpty(&cfg.UI.LogEncodingCharset, def.UI.LogEncodingCharset)
+		setIfNotEmpty(&brandingFile, def.UI.BrandingFile)
+
+		if def.UI.MaxDashboardPageLimit > 0 {
+			cfg.UI.MaxDashboardPageLimit = def.UI.MaxDashboardPageLimit
+		}
+
+		if def.UI.DAGs != nil {
+			setIfNotEmpty(&cfg.UI.DAGs.SortField, def.UI.DAGs.SortField)
+			setIfNotEmpty(&cfg.UI.DAGs.SortOrder, def.UI.DAGs.SortOrder)
+		}
+	}
+
+	l.loadBrandingConfig(cfg, def.UI, brandingFile)
+}
+
+func (l *ConfigLoader) loadBrandingConfig(cfg *Config, uiDef *UIDef, brandingFile string) {
+	var baseDir string
+	if cfgFile := cfg.Paths.ConfigFileUsed; cfgFile != "" {
+		baseDir = filepath.Dir(cfgFile)
+	} else if cfgFile := l.v.ConfigFileUsed(); cfgFile != "" {
+		baseDir = filepath.Dir(cfgFile)
+	} else if l.configFile != "" {
+		baseDir = filepath.Dir(l.configFile)
+	}
+	if brandingFile == "" && baseDir != "" {
+		candidate := filepath.Join(baseDir, "branding.yaml")
+		if fileutil.FileExists(candidate) {
+			brandingFile = candidate
+		}
+	}
+	if brandingFile == "" && fileutil.FileExists("branding.yaml") {
+		brandingFile = "branding.yaml"
+	}
+
+	if brandingFile != "" {
+		resolved := brandingFile
+		if !filepath.IsAbs(resolved) {
+			if fileutil.FileExists(resolved) {
+				if abs, err := filepath.Abs(resolved); err == nil {
+					resolved = abs
+				}
+			} else if baseDir != "" {
+				resolved = filepath.Join(baseDir, resolved)
+			}
+		}
+		if data, err := os.ReadFile(resolved); err == nil {
+			var bDef BrandingDef
+			if yamlErr := yaml.Unmarshal(data, &bDef); yamlErr == nil {
+				applyBrandingDef(&cfg.UI.Branding, &bDef)
+				cfg.UI.Branding.ConfigFile = resolved
+				baseDir = filepath.Dir(resolved)
+			}
+		}
+	}
+
+	if uiDef != nil && uiDef.Branding != nil {
+		applyBrandingDef(&cfg.UI.Branding, uiDef.Branding)
+	}
+
+	if cfg.UI.Branding.LogoFile != "" && !filepath.IsAbs(cfg.UI.Branding.LogoFile) && baseDir != "" {
+		cfg.UI.Branding.LogoFile = filepath.Join(baseDir, cfg.UI.Branding.LogoFile)
+	}
+	if cfg.UI.Branding.FaviconFile != "" && !filepath.IsAbs(cfg.UI.Branding.FaviconFile) && baseDir != "" {
+		cfg.UI.Branding.FaviconFile = filepath.Join(baseDir, cfg.UI.Branding.FaviconFile)
+	}
+
+	if cfg.UI.Branding.Title != "" && (cfg.UI.NavbarTitle == "" || cfg.UI.NavbarTitle == AppName) {
+		cfg.UI.NavbarTitle = cfg.UI.Branding.Title
+	}
+}
+
+func applyBrandingDef(dst *BrandingConfig, src *BrandingDef) {
+	if src == nil {
 		return
 	}
+	setIfNotEmpty(&dst.Title, src.Title)
+	setIfNotEmpty(&dst.LogoURL, src.LogoURL)
+	setIfNotEmpty(&dst.LogoFile, src.LogoFile)
+	setIfNotEmpty(&dst.FaviconURL, src.FaviconURL)
+	setIfNotEmpty(&dst.FaviconFile, src.FaviconFile)
+	applyBrandingColorsDef(&dst.Colors, src.Colors)
+	applyBrandingColorsDef(&dst.DarkColors, src.DarkColors)
+}
 
-	cfg.UI.NavbarColor = def.UI.NavbarColor
-	setIfNotEmpty(&cfg.UI.NavbarTitle, def.UI.NavbarTitle)
-	setIfNotEmpty(&cfg.UI.LogEncodingCharset, def.UI.LogEncodingCharset)
-
-	if def.UI.MaxDashboardPageLimit > 0 {
-		cfg.UI.MaxDashboardPageLimit = def.UI.MaxDashboardPageLimit
+func applyBrandingColorsDef(dst *BrandingColors, src *BrandingColorsDef) {
+	if src == nil {
+		return
 	}
-
-	if def.UI.DAGs != nil {
-		setIfNotEmpty(&cfg.UI.DAGs.SortField, def.UI.DAGs.SortField)
-		setIfNotEmpty(&cfg.UI.DAGs.SortOrder, def.UI.DAGs.SortOrder)
-	}
+	setIfNotEmpty(&dst.Primary, src.Primary)
+	setIfNotEmpty(&dst.PrimaryHover, src.PrimaryHover)
+	setIfNotEmpty(&dst.Background, src.Background)
+	setIfNotEmpty(&dst.Foreground, src.Foreground)
+	setIfNotEmpty(&dst.Card, src.Card)
+	setIfNotEmpty(&dst.CardForeground, src.CardForeground)
+	setIfNotEmpty(&dst.Sidebar, src.Sidebar)
+	setIfNotEmpty(&dst.SidebarForeground, src.SidebarForeground)
+	setIfNotEmpty(&dst.SidebarPrimary, src.SidebarPrimary)
+	setIfNotEmpty(&dst.Accent, src.Accent)
+	setIfNotEmpty(&dst.Border, src.Border)
 }
 
 func (l *ConfigLoader) loadQueuesConfig(cfg *Config, def Definition) {
@@ -2511,6 +2600,7 @@ var envBindings = []envBinding{
 	{key: "ui.log_encoding_charset", env: "UI_LOG_ENCODING_CHARSET"},
 	{key: "ui.navbar_color", env: "UI_NAVBAR_COLOR"},
 	{key: "ui.navbar_title", env: "UI_NAVBAR_TITLE"},
+	{key: "ui.branding_file", env: "UI_BRANDING_FILE"},
 	{key: "ui.dags.sort_field", env: "UI_DAGS_SORT_FIELD"},
 	{key: "ui.dags.sort_order", env: "UI_DAGS_SORT_ORDER"},
 	// UI (legacy)

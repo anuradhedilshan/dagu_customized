@@ -1,0 +1,42 @@
+# UI Branding & Theme Configuration
+# Place this file as `branding.yaml` in your config directory (alongside `config.yaml`),
+# or specify its path via `ui.branding_file` in `config.yaml` or `DAGU_UI_BRANDING_FILE`.
+
+title: "My Platform"
+
+# Provide either a local file path (served at /assets/brand-logo) or an external URL.
+# Relative file paths are resolved relative to this branding.yaml file.
+logo_file: "" # e.g., "./logo.svg" or "/etc/myapp/logo.png"
+logo_url: ""  # e.g., "https://example.com/logo.png"
+
+# Optional custom favicon
+favicon_file: "" # e.g., "./favicon.ico"
+favicon_url: ""
+
+# Light theme color overrides (hex, rgb, or hsl values)
+colors:
+  primary: "#2563eb"
+  primary_hover: "#1d4ed8"
+  background: "#f9f9fa"
+  foreground: "#111114"
+  card: "#ffffff"
+  card_foreground: "#111114"
+  sidebar: "#f4f4f6"
+  sidebar_foreground: "#52525c"
+  sidebar_primary: "#2563eb"
+  accent: "#ededf1"
+  border: "#e7e7ec"
+
+# Dark theme color overrides
+dark_colors:
+  primary: "#3b82f6"
+  primary_hover: "#60a5fa"
+  background: "#0e0e11"
+  foreground: "#ededf0"
+  card: "#141417"
+  card_foreground: "#ededf0"
+  sidebar: "#0a0a0c"
+  sidebar_foreground: "#a1a1ab"
+  sidebar_primary: "#60a5fa"
+  accent: "#1f1f25"
+  border: "#24242a"

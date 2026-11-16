@@ -915,7 +915,7 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
   }, [theme]);
 
   React.useEffect(() => {
-    const base = config.title || 'Dagu';
+    const base = config.title || 'Dashboard';
     const localizedTitle = STATIC_PAGE_TITLES.has(title)
       ? translateStatic(locale, title)
       : title;

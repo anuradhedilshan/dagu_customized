@@ -45,11 +45,17 @@ export type LicenseStatus = {
 
 export type WorkspaceResponse = components['schemas']['WorkspaceResponse'];
 
+export type BrandingConfig = {
+  title?: string;
+  logoUrl?: string;
+};
+
 export type Config = {
   apiURL: string;
   basePath: string;
   title: string;
   navbarColor: string;
+  branding?: BrandingConfig;
   tz: string;
   tzOffsetInSec: number | undefined;
   version: string;

@@ -147,6 +147,7 @@ type UpdateStatus struct {
 type funcsConfig struct {
 	NavbarColor           string
 	NavbarTitle           string
+	Branding              config.BrandingConfig
 	BasePath              string
 	APIBasePath           string
 	TZ                    string
@@ -180,11 +181,45 @@ func defaultFunctions(cfg *funcsConfig) template.FuncMap {
 	}
 
 	return template.FuncMap{
-		"defTitle":              func(v any) string { s, _ := v.(string); return s },
-		"version":               func() string { return config.Version },
-		"assetVersion":          currentAssetVersion,
-		"navbarColor":           func() string { return cfg.NavbarColor },
-		"navbarTitle":           func() string { return cfg.NavbarTitle },
+		"defTitle":     func(v any) string { s, _ := v.(string); return s },
+		"version":      func() string { return config.Version },
+		"assetVersion": currentAssetVersion,
+		"navbarColor":  func() string { return cfg.NavbarColor },
+		"navbarTitle":  func() string { return cfg.NavbarTitle },
+		"brandingTitle": func() string {
+			if cfg.Branding.Title != "" {
+				return cfg.Branding.Title
+			}
+			return cfg.NavbarTitle
+		},
+		"brandingLogoURL": func() string {
+			if cfg.Branding.LogoFile != "" {
+				return ensureLeadingSlash(path.Join(strings.TrimRight(cfg.BasePath, "/"), "assets/brand-logo"))
+			}
+			return cfg.Branding.LogoURL
+		},
+		"brandingFaviconURL": func() string {
+			if cfg.Branding.FaviconFile != "" {
+				return ensureLeadingSlash(path.Join(strings.TrimRight(cfg.BasePath, "/"), "assets/brand-favicon"))
+			}
+			if cfg.Branding.FaviconURL != "" {
+				return cfg.Branding.FaviconURL
+			}
+			return ensureLeadingSlash(path.Join(strings.TrimRight(cfg.BasePath, "/"), "assets/favicon.ico"))
+		},
+		"brandingCSS": func() string { return buildBrandingCSS(cfg.Branding) },
+		"brandingLightBg": func() string {
+			if c := sanitizeCSSValue(cfg.Branding.Colors.Background); c != "" {
+				return c
+			}
+			return "#f9f9fa"
+		},
+		"brandingDarkBg": func() string {
+			if c := sanitizeCSSValue(cfg.Branding.DarkColors.Background); c != "" {
+				return c
+			}
+			return "#0e0e11"
+		},
 		"basePath":              func() string { return cfg.BasePath },
 		"apiURL":                func() string { return pathutil.BuildMountedAPIPath(cfg.BasePath, cfg.APIBasePath) },
 		"tz":                    func() string { return cfg.TZ },
@@ -340,4 +375,105 @@ func defaultFunctions(cfg *funcsConfig) template.FuncMap {
 		"pathGitSyncDir":         func() string { return path.Join(cfg.Paths.DataDir, "gitsync") },
 		"pathAuditLogsDir":       func() string { return path.Join(cfg.Paths.AdminLogsDir, "audit") },
 	}
+}
+
+func sanitizeCSSValue(v string) string {
+	v = strings.TrimSpace(v)
+	if v == "" || strings.ContainsAny(v, "{};<>\"'\\") {
+		return ""
+	}
+	return v
+}
+
+func appendColorVars(b *strings.Builder, c config.BrandingColors) {
+	writeVar := func(name, val string) {
+		if s := sanitizeCSSValue(val); s != "" {
+			b.WriteString(name)
+			b.WriteString(":")
+			b.WriteString(s)
+			b.WriteString(";")
+		}
+	}
+	if p := sanitizeCSSValue(c.Primary); p != "" {
+		writeVar("--primary", p)
+		writeVar("--primary-fill", p)
+		writeVar("--ring", p)
+		writeVar("--sidebar-primary", p)
+		writeVar("--sidebar-ring", p)
+		writeVar("--status-running", p)
+		writeVar("--info", p)
+	}
+	if ph := sanitizeCSSValue(c.PrimaryHover); ph != "" {
+		writeVar("--primary-hover", ph)
+		writeVar("--primary-fill-hover", ph)
+	}
+	writeVar("--background", c.Background)
+	if fg := sanitizeCSSValue(c.Foreground); fg != "" {
+		writeVar("--foreground", fg)
+		writeVar("--text-primary", fg)
+		writeVar("--secondary-foreground", fg)
+		writeVar("--accent-foreground", fg)
+		writeVar("--text-secondary", "color-mix(in srgb, "+fg+" 72%, transparent)")
+		writeVar("--muted-foreground", "color-mix(in srgb, "+fg+" 60%, transparent)")
+		writeVar("--text-tertiary", "color-mix(in srgb, "+fg+" 55%, transparent)")
+		if sanitizeCSSValue(c.CardForeground) == "" {
+			writeVar("--card-foreground", fg)
+			writeVar("--popover-foreground", fg)
+		}
+	}
+	if card := sanitizeCSSValue(c.Card); card != "" {
+		writeVar("--card", card)
+		writeVar("--surface", card)
+		writeVar("--popover", card)
+	}
+	if cfg := sanitizeCSSValue(c.CardForeground); cfg != "" {
+		writeVar("--card-foreground", cfg)
+		writeVar("--popover-foreground", cfg)
+	}
+	if sb := sanitizeCSSValue(c.Sidebar); sb != "" {
+		writeVar("--sidebar", sb)
+		sbfg := sanitizeCSSValue(c.SidebarForeground)
+		if sbfg != "" {
+			writeVar("--sidebar-hover", "color-mix(in srgb, "+sbfg+" 10%, "+sb+")")
+			writeVar("--sidebar-active", "color-mix(in srgb, "+sbfg+" 16%, "+sb+")")
+			writeVar("--sidebar-accent", "color-mix(in srgb, "+sbfg+" 12%, "+sb+")")
+			writeVar("--sidebar-border", "color-mix(in srgb, "+sbfg+" 15%, "+sb+")")
+		} else {
+			writeVar("--sidebar-hover", "color-mix(in srgb, var(--sidebar-foreground) 10%, "+sb+")")
+			writeVar("--sidebar-active", "color-mix(in srgb, var(--sidebar-foreground) 16%, "+sb+")")
+			writeVar("--sidebar-accent", "color-mix(in srgb, var(--sidebar-foreground) 12%, "+sb+")")
+			writeVar("--sidebar-border", "color-mix(in srgb, var(--sidebar-foreground) 15%, "+sb+")")
+		}
+	}
+	if sbfg := sanitizeCSSValue(c.SidebarForeground); sbfg != "" {
+		writeVar("--sidebar-foreground", sbfg)
+		writeVar("--sidebar-accent-foreground", sbfg)
+	}
+	writeVar("--sidebar-primary", c.SidebarPrimary)
+	if acc := sanitizeCSSValue(c.Accent); acc != "" {
+		writeVar("--accent", acc)
+		writeVar("--secondary", acc)
+		writeVar("--muted", acc)
+		writeVar("--surface-variant", acc)
+	}
+	writeVar("--border", c.Border)
+}
+
+func buildBrandingCSS(b config.BrandingConfig) string {
+	var lightVars, darkVars strings.Builder
+	appendColorVars(&lightVars, b.Colors)
+	appendColorVars(&darkVars, b.DarkColors)
+
+	var out strings.Builder
+	if lightVars.Len() > 0 {
+		out.WriteString(":root{")
+		out.WriteString(lightVars.String())
+		out.WriteString("}")
+	}
+	if darkVars.Len() > 0 {
+		out.WriteString(".dark{")
+		out.WriteString(darkVars.String())
+		out.WriteString("}")
+	}
+	return out.String()
 }

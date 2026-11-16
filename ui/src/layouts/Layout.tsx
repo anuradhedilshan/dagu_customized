@@ -293,14 +293,26 @@ function Content({ navbarColor, children }: LayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span
-            className={cn(
-              'font-semibold tracking-tight whitespace-normal leading-tight text-center px-2',
-              getResponsiveTitleClass(config.title || 'Dagu', 'header-mobile')
+          <div className="flex items-center gap-2 px-2">
+            {config.branding?.logoUrl && (
+              <img
+                src={config.branding.logoUrl}
+                alt={config.title || 'Dashboard'}
+                className="h-6 w-auto max-w-[80px] object-contain"
+              />
             )}
-          >
-            {config.title || 'Dagu'}
-          </span>
+            <span
+              className={cn(
+                'font-semibold tracking-tight whitespace-normal leading-tight text-center',
+                getResponsiveTitleClass(
+                  config.title || 'Dashboard',
+                  'header-mobile'
+                )
+              )}
+            >
+              {config.title || 'Dashboard'}
+            </span>
+          </div>
           <div className="max-w-[45%] shrink-0">
             <LicenseBadge />
           </div>
@@ -356,12 +368,12 @@ function Content({ navbarColor, children }: LayoutProps) {
                 className={cn(
                   'font-semibold whitespace-normal leading-tight',
                   getResponsiveTitleClass(
-                    config.title || 'Dagu',
+                    config.title || 'Dashboard',
                     'sidebar-mobile'
                   )
                 )}
               >
-                {config.title || 'Dagu'}
+                {config.title || 'Dashboard'}
               </span>
               <button
                 ref={closeMenuButtonRef}

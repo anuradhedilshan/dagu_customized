@@ -680,6 +680,7 @@ func NewServer(setup ServerConfig, opts ...ServerOption) (*Server, error) {
 		funcsConfig: funcsConfig{
 			NavbarColor:           cfg.UI.NavbarColor,
 			NavbarTitle:           cfg.UI.NavbarTitle,
+			Branding:              cfg.UI.Branding,
 			BasePath:              evaluatedBasePath,
 			APIBasePath:           cfg.Server.APIBasePath,
 			TZ:                    cfg.Core.TZ,
@@ -1326,6 +1327,17 @@ func (srv *Server) setupAssetRoutesWithFS(r *chi.Mux, basePath string, assetFS f
 	}
 
 	r.Get(assetsPath, func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "brand-logo") && srv.config.UI.Branding.LogoFile != "" {
+			w.Header().Set("Cache-Control", "no-cache")
+			http.ServeFile(w, r, srv.config.UI.Branding.LogoFile)
+			return
+		}
+		if strings.HasSuffix(r.URL.Path, "brand-favicon") && srv.config.UI.Branding.FaviconFile != "" {
+			w.Header().Set("Cache-Control", "no-cache")
+			http.ServeFile(w, r, srv.config.UI.Branding.FaviconFile)
+			return
+		}
+
 		isCurrentVersion := r.URL.Query().Get("v") == currentAssetVersion()
 		w.Header().Set("Cache-Control", cacheControlForAsset(r.URL.Path, isCurrentVersion))
 

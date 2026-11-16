@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import type { ReactNode } from 'react';
-import { DaguMark } from '@/components/DaguMark';
+import { Layers } from 'lucide-react';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { useConfig } from '@/contexts/ConfigContext';
 
@@ -14,16 +14,24 @@ type AuthLayoutProps = {
 /** Centered card layout shared by the sign-in and first-run setup pages. */
 export function AuthLayout({ subtitle, children }: AuthLayoutProps) {
   const config = useConfig();
+  const title = config.branding?.title || config.title || 'Dashboard';
+  const logoUrl = config.branding?.logoUrl;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-4 text-center">
-          <DaguMark className="h-10 w-10 text-foreground" />
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={title}
+              className="h-10 w-auto max-w-[160px] object-contain"
+            />
+          ) : (
+            <Layers className="h-10 w-10 text-foreground" />
+          )}
           <div className="space-y-1">
-            <h1 className="text-xl font-semibold tracking-tight">
-              {config.title || 'Dagu'}
-            </h1>
+            <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
             <p className="text-sm text-muted-foreground">{subtitle}</p>
           </div>
         </div>

@@ -119,11 +119,11 @@
     --surface: #ffffff;
     --surface-variant: #f4f4f6;
 
-    --primary: #5d4fe0;
+    --primary: #2563eb;
     --primary-foreground: #ffffff;
-    --primary-hover: #4e40d4;
-    --primary-fill: #5d4fe0;
-    --primary-fill-hover: #4e40d4;
+    --primary-hover: #1d4ed8;
+    --primary-fill: #2563eb;
+    --primary-fill-hover: #1d4ed8;
 
     --secondary: #f1f1f4;
     --secondary-foreground: #18181c;
@@ -140,32 +140,32 @@
     --warning: #9a5d0b;
     --warning-foreground: #ffffff;
     --warning-muted: color-mix(in srgb, var(--warning) 10%, transparent);
-    --info: #5d4fe0;
+    --info: #2563eb;
     --info-foreground: #ffffff;
     --info-muted: color-mix(in srgb, var(--info) 10%, transparent);
 
     --status-success: #178a44;
     --status-error: #c8382f;
     --error-muted: color-mix(in srgb, var(--status-error) 10%, transparent);
-    --status-running: #5d4fe0;
+    --status-running: #2563eb;
     --status-neutral: #80808b;
     --status-warning: #9a5d0b;
-    --status-aborted: #9333ea;
+    --status-aborted: #64748b;
 
     /* The status colours of the graph lines and tints, the same in both
        themes: a line reads by its hue, where text needs the contrast of the
        --status-* tokens. */
     --graph-success: #22c55e;
     --graph-error: #ef5350;
-    --graph-running: #7c6ef4;
+    --graph-running: #3b82f6;
     --graph-warning: #d9a03c;
-    --graph-aborted: #c084fc;
+    --graph-aborted: #94a3b8;
     --graph-neutral: #8a8d99;
 
     --border: #e7e7ec;
     --border-strong: #d3d3db;
     --input: #dcdce3;
-    --ring: #5d4fe0;
+    --ring: #2563eb;
 
     --text-primary: #111114;
     --text-secondary: #52525c;
@@ -177,11 +177,11 @@
     --sidebar-border: #e7e7ec;
     --sidebar-hover: #eaeaee;
     --sidebar-active: #e4e4ea;
-    --sidebar-primary: #5d4fe0;
+    --sidebar-primary: #2563eb;
     --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #eaeaee;
     --sidebar-accent-foreground: #111114;
-    --sidebar-ring: #5d4fe0;
+    --sidebar-ring: #2563eb;
 
     --shadow-sm: 0 1px 2px 0 rgba(17, 17, 20, 0.04);
     --shadow-md:
@@ -194,12 +194,11 @@
     --text: 17 17 20;
     --sidebar-bg: 244 244 246;
     --sidebar-text: 82 82 92;
-    --primary-rgb: 93 79 224;
+    --primary-rgb: 37 99 235;
   }
 
   .dark {
-    /* Neutral night: graphite surfaces without a blue cast, the same violet
-       accent, signal-green success. */
+    /* Neutral night: graphite surfaces without a blue cast. */
     --background: #0e0e11;
     --foreground: #ededf0;
 
@@ -210,12 +209,12 @@
     --surface: #141417;
     --surface-variant: #1a1a1e;
 
-    --primary: #7c6ef4;
+    --primary: #3b82f6;
     --primary-foreground: #ffffff;
-    --primary-hover: #8e82f6;
+    --primary-hover: #60a5fa;
     /* Darker than --primary so white labels clear 4.5:1 on dark surfaces. */
-    --primary-fill: #6a5ce8;
-    --primary-fill-hover: #6355e0;
+    --primary-fill: #2563eb;
+    --primary-fill-hover: #1d4ed8;
 
     --secondary: #1c1c21;
     --secondary-foreground: #ededf0;
@@ -232,22 +231,22 @@
     --warning: #d9a03c;
     --warning-foreground: #261a00;
     --warning-muted: color-mix(in srgb, var(--warning) 15%, transparent);
-    --info: #a89ff8;
-    --info-foreground: #17123f;
+    --info: #60a5fa;
+    --info-foreground: #0f172a;
     --info-muted: color-mix(in srgb, var(--info) 15%, transparent);
 
     --status-success: #22c55e;
     --status-error: #ef5350;
     --error-muted: color-mix(in srgb, var(--status-error) 15%, transparent);
-    --status-running: #a89ff8;
+    --status-running: #60a5fa;
     --status-neutral: #8a8d99;
     --status-warning: #d9a03c;
-    --status-aborted: #c084fc;
+    --status-aborted: #94a3b8;
 
     --border: #24242a;
     --border-strong: #32323a;
     --input: #2e2e36;
-    --ring: #7c6ef4;
+    --ring: #3b82f6;
 
     --text-primary: #ededf0;
     --text-secondary: #a8a8b2;
@@ -259,11 +258,11 @@
     --sidebar-border: #1f1f24;
     --sidebar-hover: #16161a;
     --sidebar-active: #1c1c21;
-    --sidebar-primary: #a89ff8;
+    --sidebar-primary: #60a5fa;
     --sidebar-primary-foreground: #0a0a0c;
     --sidebar-accent: #1c1c21;
     --sidebar-accent-foreground: #ededf0;
-    --sidebar-ring: #7c6ef4;
+    --sidebar-ring: #3b82f6;
 
     /* Elevation (More Subtle in Dark Mode) */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);

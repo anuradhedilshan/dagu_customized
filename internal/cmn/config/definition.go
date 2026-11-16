@@ -361,11 +361,39 @@ type KubernetesSecretsDef struct {
 
 // UIDef configures the user interface.
 type UIDef struct {
-	LogEncodingCharset    string      `mapstructure:"log_encoding_charset"`
-	NavbarColor           string      `mapstructure:"navbar_color"`
-	NavbarTitle           string      `mapstructure:"navbar_title"`
-	MaxDashboardPageLimit int         `mapstructure:"max_dashboard_page_limit"`
-	DAGs                  *DAGListDef `mapstructure:"dags"`
+	LogEncodingCharset    string       `mapstructure:"log_encoding_charset"`
+	NavbarColor           string       `mapstructure:"navbar_color"`
+	NavbarTitle           string       `mapstructure:"navbar_title"`
+	MaxDashboardPageLimit int          `mapstructure:"max_dashboard_page_limit"`
+	DAGs                  *DAGListDef  `mapstructure:"dags"`
+	BrandingFile          string       `mapstructure:"branding_file"`
+	Branding              *BrandingDef `mapstructure:"branding"`
+}
+
+// BrandingDef configures UI branding, logo, and colors.
+type BrandingDef struct {
+	Title       string             `mapstructure:"title" yaml:"title"`
+	LogoURL     string             `mapstructure:"logo_url" yaml:"logo_url"`
+	LogoFile    string             `mapstructure:"logo_file" yaml:"logo_file"`
+	FaviconURL  string             `mapstructure:"favicon_url" yaml:"favicon_url"`
+	FaviconFile string             `mapstructure:"favicon_file" yaml:"favicon_file"`
+	Colors      *BrandingColorsDef `mapstructure:"colors" yaml:"colors"`
+	DarkColors  *BrandingColorsDef `mapstructure:"dark_colors" yaml:"dark_colors"`
+}
+
+// BrandingColorsDef configures CSS color values.
+type BrandingColorsDef struct {
+	Primary           string `mapstructure:"primary" yaml:"primary"`
+	PrimaryHover      string `mapstructure:"primary_hover" yaml:"primary_hover"`
+	Background        string `mapstructure:"background" yaml:"background"`
+	Foreground        string `mapstructure:"foreground" yaml:"foreground"`
+	Card              string `mapstructure:"card" yaml:"card"`
+	CardForeground    string `mapstructure:"card_foreground" yaml:"card_foreground"`
+	Sidebar           string `mapstructure:"sidebar" yaml:"sidebar"`
+	SidebarForeground string `mapstructure:"sidebar_foreground" yaml:"sidebar_foreground"`
+	SidebarPrimary    string `mapstructure:"sidebar_primary" yaml:"sidebar_primary"`
+	Accent            string `mapstructure:"accent" yaml:"accent"`
+	Border            string `mapstructure:"border" yaml:"border"`
 }
 
 // DAGListDef configures the DAGs list page.

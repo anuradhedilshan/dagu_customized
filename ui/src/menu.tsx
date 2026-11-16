@@ -64,7 +64,7 @@ type MainListItemsProps = {
   hideHeader?: boolean;
 };
 
-const DEFAULT_TITLE = 'Dagu';
+const DEFAULT_TITLE = 'Dashboard';
 
 function getTitleInitial(title: string): string {
   return title.charAt(0).toUpperCase();
@@ -219,7 +219,7 @@ function CommandPaletteTrigger({
         className={cn(
           'flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-sm text-sidebar-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sidebar-ring',
           isOpen && !customColor
-            ? 'border border-sidebar-border bg-card shadow-xs hover:border-border-strong'
+            ? 'border border-sidebar-border bg-sidebar-accent shadow-xs hover:bg-sidebar-active'
             : 'hover:bg-sidebar-hover'
         )}
       >
@@ -516,11 +516,8 @@ export const mainListItems = React.forwardRef<
               <PanelLeft size={18} />
             </div>
           </button>
-          <span
-            className={cn(
-              'font-semibold tracking-tight text-sidebar-accent-foreground select-none whitespace-nowrap leading-tight ml-1 overflow-hidden',
-              getResponsiveTitleClass(title, 'sidebar-expanded')
-            )}
+          <div
+            className="flex items-center gap-2 ml-1 overflow-hidden"
             style={{
               transition:
                 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -529,8 +526,22 @@ export const mainListItems = React.forwardRef<
               transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
             }}
           >
-            {title}
-          </span>
+            {config.branding?.logoUrl && (
+              <img
+                src={config.branding.logoUrl}
+                alt={title}
+                className="h-6 w-auto max-w-[100px] shrink-0 object-contain"
+              />
+            )}
+            <span
+              className={cn(
+                'font-semibold tracking-tight text-sidebar-accent-foreground select-none whitespace-nowrap leading-tight',
+                getResponsiveTitleClass(title, 'sidebar-expanded')
+              )}
+            >
+              {title}
+            </span>
+          </div>
         </div>
       )}
       {/* Developer-tool Navigation - Compact Spacing */}
